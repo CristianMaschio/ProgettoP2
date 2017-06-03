@@ -48,7 +48,7 @@ public:
     void setLabel(QLabel* l);
     void createLayout();
     void addUsersBox();
-
+    void refresh();
 public slots:
     void buttonFind();
     void buttonSeeAll();
@@ -57,6 +57,7 @@ public slots:
     void boxUserChange(QString);
     void aggiornaView();
     void aggiornaViewChangeName();
+    void changeTypeModUser(User *newTypeUser=0);
     void closeEvent();
 signals:
     void sAggiornaModificaUser(ModificaUser*);

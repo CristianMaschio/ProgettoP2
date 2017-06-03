@@ -227,5 +227,7 @@ void ModificaUser::bChangeType()
     newUser->setName(modUser->getName());
     newUser->setSurname(modUser->getSurname());
     newUser->setSkill(modUser->getSkill());
+    modUser=newUser;
     emit v_changeType(newUser);
+   // this->close();
 }

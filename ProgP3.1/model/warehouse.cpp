@@ -10,20 +10,22 @@ void Warehouse::loadItems()
 {
     deleteList();
     QFile file(QString::fromStdString(xmlFile));
-    file.open(QIODevice::ReadOnly);
-    QXmlStreamReader xmlReader(&file);
-    xmlReader.readNext();
-    while (!xmlReader.atEnd())
+    if(file.open(QIODevice::ReadOnly))
     {
-        Item* app=NULL;
-        if (xmlReader.name()=="Item"){
-            app=new Item;
-            app->loadItem(xmlReader,app);
-            xmlReader.readNextStartElement();
-            items.push_back(app);
+        QXmlStreamReader xmlReader(&file);
+        xmlReader.readNext();
+        while (!xmlReader.atEnd())
+        {
+            Item* app=NULL;
+            if (xmlReader.name()=="Item"){
+                app=new Item;
+                app->loadItem(xmlReader,app);
+                xmlReader.readNextStartElement();
+                items.push_back(app);
+            }
+            xmlReader.readNextStartElement();//lettura prossimo utente
         }
-        xmlReader.readNextStartElement();//lettura prossimo utente
-    }
+    }else QMessageBox::warning(0,"Errore lettura oggetti","Impossibile leggere gli oggetti, non è stato trovato il file Items.xml");
 }
 
 bool Warehouse::checkType(const string &typeItem, const string &type2) const

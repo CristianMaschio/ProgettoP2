@@ -12,6 +12,13 @@ void AllUsersView::addUsersBox()
     }
 }
 
+void AllUsersView::refresh()
+{
+    lUsername->setText(QString::fromStdString(logUser->getUsername()));
+    lName->setText(QString::fromStdString(logUser->getName()));
+    lSurname->setText(QString::fromStdString(logUser->getSurname()));
+}
+
 
 AllUsersView::AllUsersView(User *LogUser, AllUsers *allUsers, QWidget *parent):QWidget(parent),logUser(LogUser),users(allUsers)
 {
@@ -104,6 +111,7 @@ void AllUsersView::buttonModifica()
         emit sViewEnable();
         connect(modUserView,SIGNAL(finished(int)),this,SIGNAL(sViewEnable()));
         connect(modUserView,SIGNAL(finished(int)),this,SLOT(aggiornaView()));
+        connect(modUserView,SIGNAL(v_changeType(User*)),this,SLOT(changeTypeModUser(User*)));
         connect(modUserView,SIGNAL(v_changeUsername(User*,string)),this,SLOT(aggiornaViewChangeName()));
         modUserView->show();
     }else QMessageBox::warning(0,"Modifica non possibile","Non e' stato selezionato alcun utente da modificare");
@@ -140,6 +148,11 @@ void AllUsersView::aggiornaView()
 void AllUsersView::aggiornaViewChangeName()
 {
     addUsersBox();
+}
+
+void AllUsersView::changeTypeModUser(User* newTypeUser)
+{
+    modUser=newTypeUser;
 }
 
 void AllUsersView::closeEvent()

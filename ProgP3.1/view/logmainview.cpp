@@ -242,7 +242,8 @@ void LogMainView::addViewItems()
 
 void LogMainView::aggiornaViewLog()
 {
-    gestionale->refresh();
+    if(gestionale)gestionale->refresh();
+    else viewUsers->refresh();
 }
 
 void LogMainView::aggiornaViewBox()

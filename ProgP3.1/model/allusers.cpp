@@ -36,26 +36,28 @@ void AllUsers::loadUsers()
 {
     deleteList();
     QFile file(QString::fromStdString(xmlFile));
-    file.open(QIODevice::ReadOnly);
-    QXmlStreamReader xmlReader(&file);
-    xmlReader.readNextStartElement();
-    while (!xmlReader.atEnd())
+    if(file.open(QIODevice::ReadOnly))
     {
-        User* app=NULL;
-        if(xmlReader.name()=="Officeworker") app=new Officeworker;
-        else if(xmlReader.name()=="Warehouseman") app=new Warehouseman;
-        else if(xmlReader.name()=="Accountant") app=new Accountant;
-        else if(xmlReader.name()=="Processworker") app=new Processworker;
-        else if(xmlReader.name()=="Admin")app=new Admin;
-
-        if (app)
+        QXmlStreamReader xmlReader(&file);
+        xmlReader.readNextStartElement();
+        while (!xmlReader.atEnd())
         {
-            app->loadUser(xmlReader);
-            xmlReader.readNextStartElement();
-            users.push_back(app);
+            User* app=NULL;
+            if(xmlReader.name()=="Officeworker") app=new Officeworker;
+            else if(xmlReader.name()=="Warehouseman") app=new Warehouseman;
+            else if(xmlReader.name()=="Accountant") app=new Accountant;
+            else if(xmlReader.name()=="Processworker") app=new Processworker;
+            else if(xmlReader.name()=="Admin")app=new Admin;
+
+            if (app)
+            {
+                app->loadUser(xmlReader);
+                xmlReader.readNextStartElement();
+                users.push_back(app);
+            }
+            xmlReader.readNextStartElement();//lettura prossimo utente
         }
-        xmlReader.readNextStartElement();//lettura prossimo utente
-    }
+    }else QMessageBox::warning(0,"Caricamento utenti non riuscito","Impossibile leggere gli utenti, il file Users.xml non e' stato trovato");
 }
 
 void AllUsers::deleteList()
@@ -102,6 +104,7 @@ User* AllUsers::tryLog(const string &name, const string &password)
 
     if(!checkAdmin())
     {
+        removeUser("admin",true);
         users.push_back(new Admin ("admin","admin","admin","admin"));
     }
 
@@ -123,7 +126,7 @@ void AllUsers::addUser(User *user)
     }else QMessageBox::warning(0,"Creazione Utente non riuscita","L'utente da lei creato e' gia' esistente nel database");
 }
 
-void AllUsers::removeUser(const string &name)
+void AllUsers::removeUser(const string &name, bool check)
 {
     bool a=false;
     for (list<User*>::iterator it=users.begin(); it!=users.end() && a==false; ++it)
@@ -134,10 +137,10 @@ void AllUsers::removeUser(const string &name)
             it=users.erase(it);
             --it;
             a=true;
-            QMessageBox::information(0,"Eliminazione riuscita","La rimozione dell'utente e' avvenuta con successo");
+            if(!check)QMessageBox::information(0,"Eliminazione riuscita","La rimozione dell'utente e' avvenuta con successo");
         }
     }
-    if(!a) QMessageBox::warning(0,"Eliminazione non riuscita","L'utente da lei digitato non e' esistente nel database");
+    if(!a && !check) QMessageBox::warning(0,"Eliminazione non riuscita","L'utente da lei digitato non e' esistente nel database");
 }
 
 void AllUsers::changeUsername(User* user, const string &newUsername)

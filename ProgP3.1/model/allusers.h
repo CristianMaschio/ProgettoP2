@@ -25,7 +25,7 @@ public:
     const User* searchUser(const string& name, bool check=false) const;
     User *tryLog(const string& name, const string& password);
     void addUser(User *user);
-    void removeUser(const string& name);
+    void removeUser(const string& name, bool check=false);
 
     void changeUsername(User* user, const string& newUsername);
     void changePassword(User* user, const string& newPassword);
