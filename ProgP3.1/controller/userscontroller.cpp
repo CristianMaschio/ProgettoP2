@@ -1,6 +1,11 @@
 #include "userscontroller.h"
 #include <QMessageBox>
 
+bool UsersController::isAdmin()
+{
+    return dynamic_cast<Admin*>(logUser);
+}
+
 UsersController::UsersController(AllUsers *allUsers, QObject* parent):QObject(parent),users(allUsers)
 {
 
@@ -9,8 +14,6 @@ UsersController::UsersController(AllUsers *allUsers, QObject* parent):QObject(pa
 void UsersController::aggiornaModificaUser(ModificaUser *mUser)
 {
     modUserView=mUser;
-    //QMessageBox::information(0,"Aggiornamento","Aggiornamento avvenuto con successo");
-    //Inserire tutti i connnect da fare
     connect(modUserView,SIGNAL(v_changeUsername(User*,string)),this,SLOT(changeUsername(User*,string)));
     connect(modUserView,SIGNAL(v_changePassword(User*,string)),this,SLOT(changePassword(User*,string)));
     connect(modUserView,SIGNAL(v_changeName(User*,string)),this,SLOT(changeName(User*,string)));
@@ -33,7 +36,7 @@ void UsersController::aggiornaViewUsers(AllUsersView *aggViewUsers)
 
 void UsersController::addUser(User *newUser)
 {
-    if(dynamic_cast<Admin*>(logUser)){
+    if(isAdmin()){
         if(!users->searchUser(newUser->getUsername(),true))modUserView->close();
         users->addUser(newUser);
     }else{
@@ -72,8 +75,7 @@ void UsersController::changePassword(User *modUser, const string &newPassword)
 
 void UsersController::changeName(User *modUser, const string &newName)
 {
-    Admin* app=dynamic_cast<Admin*>(logUser);
-    if(app){
+    if(isAdmin()){
         users->changeName(modUser,newName);
     }else{
         QMessageBox::warning(0,"Errore cambio nome","Utente non autorizzato a cambiare il nome");
@@ -82,8 +84,7 @@ void UsersController::changeName(User *modUser, const string &newName)
 
 void UsersController::changeSurname(User *modUser, const string &newSurname)
 {
-    Admin* app=dynamic_cast<Admin*>(logUser);
-    if(app){
+    if(isAdmin()){
         users->changeSurname(modUser,newSurname);
     }else{
         QMessageBox::warning(0,"Errore cambio cognome","Utente non autorizzato a cambiare il cognome");
@@ -92,8 +93,7 @@ void UsersController::changeSurname(User *modUser, const string &newSurname)
 
 void UsersController::changeSkill(User *modUser, const int skill)
 {
-    Admin* app=dynamic_cast<Admin*>(logUser);
-    if(app){
+    if(isAdmin()){
         users->changeSkill(modUser,skill);
     }else{
         QMessageBox::warning(0,"Errore cambio skill","Utente non autorizzato a cambiare la skill");
@@ -102,8 +102,7 @@ void UsersController::changeSkill(User *modUser, const int skill)
 
 void UsersController::changeType(User * newUserType)
 {
-    Admin* app=dynamic_cast<Admin*>(logUser);
-    if(app){
+    if(isAdmin()){
         users->changeType(newUserType);
     }else{
         QMessageBox::warning(0,"Errore cambio tipo","Utente non autorizzato a cambiare il tipo");

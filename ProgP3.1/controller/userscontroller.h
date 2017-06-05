@@ -13,6 +13,8 @@ class UsersController: public QObject
     User* logUser=NULL;
     ModificaUser* modUserView=NULL; //puntatore classe view
     AllUsersView* viewUsers=NULL;
+
+    bool isAdmin();
 public:
     UsersController(AllUsers* allUsers, QObject* parent=0);
 
